@@ -14,6 +14,10 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async getUsers(): Promise<User[] | null> {
+    return await this.userRepository.getUsers();
+  }
+
   async verify(verifyString: VerifyArgs): Promise<User | null> {
     return await this.userRepository.verify(verifyString);
   }

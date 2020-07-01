@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { CreateUserArgs } from './dto/create-user.args';
 import { User } from './interface/user.interface';
@@ -9,7 +9,12 @@ import { UserPayload } from '../auth/interface/user.type';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Mutation(() => User)
+  @Query(() => [User], { nullable: true })
+  async getUsers(): Promise<User[] | null> {
+    return await this.userService.getUsers();
+  }
+
+  @Mutation(() => User, { nullable: true })
   async verify(@Args() verifyString: VerifyArgs): Promise<User | null> {
     return await this.userService.verify(verifyString);
   }

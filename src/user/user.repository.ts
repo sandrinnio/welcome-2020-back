@@ -13,6 +13,14 @@ export class UserRepository {
     @InjectModel('User') private readonly userModel: Model<User, {}>,
   ) {}
 
+  async getUsers(): Promise<User[] | null> {
+    try {
+      return await this.userModel.find();
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
   async verify(verifyString: VerifyArgs): Promise<User | null> {
     try {
       return await this.userModel.findOneAndUpdate({

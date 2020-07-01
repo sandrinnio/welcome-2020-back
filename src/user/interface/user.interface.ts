@@ -17,4 +17,7 @@ export class User extends Document {
 
   @Field()
   readonly email: string;
+
+  @Field(() => Boolean)
+  readonly verified: boolean;
 }
