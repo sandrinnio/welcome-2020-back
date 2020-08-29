@@ -76,12 +76,14 @@ export class UserRepository {
     if (user.paid) {
       const qr = await QRCode.toDataURL(user.email);
       const base64Data = qr.split(',')[1];
-      const filename = base64Data.split('+');
+      const filename = [...Array(10)]
+        .map(() => (~~(Math.random() * 36)).toString(36))
+        .join('');
       const buf = Buffer.from(base64Data, 'base64');
       const params = {
         Body: buf,
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `Tickets/${filename[filename.length - 1]}.png`,
+        Key: `Tickets/${filename}.png`,
         ContentType: 'image/png',
         ContentEncoding: 'base64',
         ACL: 'public-read',
