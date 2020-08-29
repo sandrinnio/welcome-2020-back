@@ -1,4 +1,7 @@
-import { InternalServerErrorException, ConflictException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { SendGridService } from '@anchan828/nest-sendgrid';
 import { Model } from 'mongoose';
@@ -6,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './interface/user.interface';
 import { CreateUserArgs } from './dto/create-user.args';
 import { VerifyArgs } from './dto/verify.args';
+import { GetUserArgs } from './dto/get-user.args';
 
 export class UserRepository {
   constructor(
@@ -21,17 +25,25 @@ export class UserRepository {
     }
   }
 
+  async getUser(getUserArgs: GetUserArgs): Promise<User> {
+    return await this.userModel.findOne({ _id: getUserArgs.record.id });
+  }
+
   async verify(verifyString: VerifyArgs): Promise<User | null> {
     try {
-      return await this.userModel.findOneAndUpdate({
-        verified: false,
-        verifyString: verifyString.record.verifyString,
-      }, {
-        $set: { verified: true },
-        $unset: { verifyString: 1 },
-      }, {
-        new: true,
-      });
+      return await this.userModel.findOneAndUpdate(
+        {
+          verified: false,
+          verifyString: verifyString.record.verifyString,
+        },
+        {
+          $set: { verified: true },
+          $unset: { verifyString: 1 },
+        },
+        {
+          new: true,
+        },
+      );
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -46,7 +58,9 @@ export class UserRepository {
         email: createUserArgs.record.email,
         idNumber: createUserArgs.record.idNumber,
         phone: createUserArgs.record.phone,
-        verifyString: [...Array(40)].map(() => (~~(Math.random() * 36)).toString(36)).join(''),
+        verifyString: [...Array(40)]
+          .map(() => (~~(Math.random() * 36)).toString(36))
+          .join(''),
         password: await bcrypt.hash(createUserArgs.record.password, salt),
       }).save();
       this.sendGrid.send({
