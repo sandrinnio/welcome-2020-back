@@ -20,4 +20,10 @@ export class User extends Document {
 
   @Field(() => Boolean)
   readonly verified: boolean;
+
+  @Field(() => Boolean)
+  readonly paid: boolean;
+
+  @Field({ nullable: true })
+  readonly ticket: string;
 }

@@ -1,13 +1,16 @@
 import { InputType, Field, ArgsType, ID } from '@nestjs/graphql';
 
 @InputType()
-class GetUserDTO {
+class VerifyPaymentDTO {
   @Field(() => ID)
   id: string;
+
+  @Field(() => Boolean)
+  paid: boolean;
 }
 
 @ArgsType()
-export class GetUserArgs {
+export class VerifyPaymentArgs {
   @Field()
-  record: GetUserDTO;
+  record: VerifyPaymentDTO;
 }

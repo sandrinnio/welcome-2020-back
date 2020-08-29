@@ -5,6 +5,7 @@ import { User } from './interface/user.interface';
 import { VerifyArgs } from './dto/verify.args';
 import { UserPayload } from '../auth/interface/user.type';
 import { GetUserArgs } from './dto/get-user.args';
+import { VerifyPaymentArgs } from './dto/vetify-payment.args';
 
 @Resolver('User')
 export class UserResolver {
@@ -15,14 +16,21 @@ export class UserResolver {
     return await this.userService.getUsers();
   }
 
-  @Query(() => User)
-  getUser(@Args() getUserArgs: GetUserArgs): Promise<User> {
+  @Query(() => User, { nullable: true })
+  getUser(@Args() getUserArgs: GetUserArgs): Promise<User | null> {
     return this.userService.getUser(getUserArgs);
   }
 
   @Mutation(() => User, { nullable: true })
   async verify(@Args() verifyString: VerifyArgs): Promise<User | null> {
     return await this.userService.verify(verifyString);
+  }
+
+  @Mutation(() => User, { nullable: true })
+  verifyPayment(
+    @Args() verifyPaymentArgs: VerifyPaymentArgs,
+  ): Promise<User | null> {
+    return this.userService.verifyPayment(verifyPaymentArgs);
   }
 
   @Mutation(() => UserPayload)

@@ -9,5 +9,7 @@ export const UserModel = new Schema({
   password: { type: String, required: true },
   verifyString: { type: String },
   verified: { type: Boolean, default: false },
+  paid: { type: Boolean, default: false },
+  ticket: { type: String },
   created_at: { type: Date, default: Date.now() },
 });
